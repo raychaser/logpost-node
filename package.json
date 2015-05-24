@@ -1,0 +1,31 @@
+{
+  "name": "node-logpost",
+  "version": "0.0.1",
+  "private": true,
+  "author": {
+    "name": "Christian Beedgen",
+    "email": "raychaser@gmail.com"
+  },
+  "contributors": [
+  ],
+  "description": "a library to send logs via HTTP POST to a central logging server",
+  "scripts": {
+    "lint": "jshint ./lib ./test"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/raychaser/logpost-node.git"
+  },
+  "homepage": "https://github.com/raychaser/logpost-node",
+  "dependencies": {
+    "docopt": "^0.6.2",
+    "log4js": "^0.6.25",
+    "agentkeepalive": "^2.0.2"
+  },
+  "devDependencies": {
+    "jshint": "^2.5.1"
+  }
+}
