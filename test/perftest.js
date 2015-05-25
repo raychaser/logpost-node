@@ -7,14 +7,24 @@ var logpost = require('./../lib/logpost.js');
 
 // Get commandline arguments.
 var doc = 'Usage: ' +
-  'sumo-logpost <token> [--debug] [--skip-cert-validation] ' +
+  'sumo-logpost --run <run-millis> --batch <batchsize> ' +
+  '--host <host> --path <path> [--buffer <messages>] ' +
+  '[--timeout <timeout-millis>] [--gzip] [--max-sockets <max-sockets>] ' +
+  '[--debug] [--skip-cert-validation] ' +
   'sumo-logpost -h | --help | --version';
 var options = docopt.docopt(doc, {
   argv: process.argv.slice(2),
   help: true,
   version: "0.0.0"
 });
-var token = options['<token>'];
+var runMillis = options['<run-millis>'];
+var batchSize = options['<batchsize>'];
+var host = options['<host>'];
+var path = options['<path>'];
+var gzip = options['--gzip'] === true;
+var maxMessages = options['<messages>'] || 100;
+var timeoutMillis = options['<timeout-millis>'] || 1000;
+var maxSockets = options['<max-sockets>'] || 32;
 
 // Drop cert validation if requested.
 var nonStrict = options['--skip-cert-validation'];
@@ -41,16 +51,15 @@ function makeGuid() {
 }
 
 // Create test messages.
-var host = 'collectors.sumologic.com';
-var path = '/receiver/v1/http/' + token;
 var log = logpost.new({
   logger: logger,
   host: host,
   path: path,
-  gzip: true,
+  gzip: gzip,
   cookies: false,
-  maxMessages: 1000,
-  timeoutMillis: 1000
+  maxMessages: maxMessages,
+  timeoutMillis: timeoutMillis,
+  maxSockets: maxSockets
 });
 
 // Make a unique ID so we can query for messages in this run.
@@ -65,14 +74,14 @@ for (var i = 0; i < 5; i++) {
 // Create messages on an interval.
 var counter = 1;
 var interval = setInterval(function () {
-  for (var i = 0; i < 50; i++) {
+  for (var i = 0; i < batchSize; i++) {
     log.message(
       new Date().toISOString() + " " + guid + " " + padding + counter);
     counter += 1;
   }
 }, 0);
 
-// After 10 seconds, initiate shutdown.
+// After done, initiate shutdown.
 setTimeout(function () {
   clearInterval(interval);
   log.shutdown(true);
@@ -81,4 +90,4 @@ setTimeout(function () {
     log.messageCount() + " messages sent, token: " + guid);
   logger.debug(
     "DONE with status code counts: " + JSON.stringify(log.statusCodes()));
-}, 1000 * 60 * 10);
+}, runMillis);
