@@ -1,0 +1,3 @@
+nodejs test/perftest.js --run $(expr 1000 \* 10) --batch 100 --host collectors.sumologic.com --path /receiver/v1/http/$LOGPOST_HTTP_TOKEN --buffer 1000 --max-sockets 16 --gzip  --debug
+
+node test/perftest.js --run 10000 --batch 10 --host $SUMOLOGIC_LONG --path /receiver/v1/http/$LONG_LOGPOST_HTTP_TOKEN  --buffer 1000 --max-sockets 16 --gzip --debug
