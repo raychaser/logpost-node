@@ -26,6 +26,6 @@
     "agentkeepalive": "^2.0.2"
   },
   "devDependencies": {
-    "jshint": "^2.7.0"
+    "jshint": "2.7.0"
   }
 }
