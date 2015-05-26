@@ -8,6 +8,7 @@ var logpost = require('./../lib/logpost.js');
 // Get commandline arguments.
 var doc = 'Usage: ' +
   'sumo-logpost --run <run-millis> --batch <batchsize> ' +
+  '[--grace <grace-millis>] ' +
   '--host <host> --path <path> [--buffer <messages>] ' +
   '[--timeout <timeout-millis>] [--gzip] [--max-sockets <max-sockets>] ' +
   '[--debug] [--skip-cert-validation] ' +
@@ -19,6 +20,7 @@ var options = docopt.docopt(doc, {
 });
 var runMillis = options['<run-millis>'];
 var batchSize = options['<batchsize>'];
+var graceMillis = options['<grace-millis>'] || 0;
 var host = options['<host>'];
 var path = options['<path>'];
 var gzip = options['--gzip'] === true;
@@ -79,7 +81,7 @@ var interval = setInterval(function () {
       new Date().toISOString() + " " + guid + " " + padding + counter);
     counter += 1;
   }
-}, 0);
+}, graceMillis);
 
 // After done, initiate shutdown.
 setTimeout(function () {
